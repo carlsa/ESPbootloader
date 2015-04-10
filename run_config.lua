@@ -12,6 +12,16 @@ wifi.sta.getap(function(t)
 	end
 end)
 
+
+local unescape = function (s)
+	s = string.gsub(s, "+", " ")
+	s = string.gsub(s, "%%(%x%x)", function (h)
+			return string.char(tonumber(h, 16))
+		end)
+	return s
+end
+
+
 function setup_server(aps)
 	print("Setting up Wifi AP")
 	wifi.setmode(wifi.SOFTAP)
@@ -32,8 +42,8 @@ function setup_server(aps)
     	    end
         	local _GET = {}
         	if (vars ~= nil)then
-            	for k, v in string.gmatch(vars, "(%w+)=(%w+)&*") do
-                	_GET[k] = v
+            	for k, v in string.gmatch(vars, "(%w+)=([^%&]+)&*") do
+                	_GET[k] = unescape(v)
             	end
 	        end
               
